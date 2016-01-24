@@ -7,11 +7,11 @@ Gem::Specification.new do |spec|
   spec.name          = "fiveinarow"
   spec.version       = Fiveinarow::VERSION
   spec.authors       = ["Tomáš Nesrovnal"]
-  spec.email         = ["nesrotom@fit.cvut.cz"]
+  spec.email         = ["nesro@nesro.cz"]
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{Five-in-a-row game}
+  spec.description   = %q{Five-in-a-row is a classic board game. You need to make a line of five to win.}
+  spec.homepage      = "https://github.com/nesro/fiveinarow"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or

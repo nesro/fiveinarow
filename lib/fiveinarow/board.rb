@@ -18,9 +18,13 @@ class Board
       end
     end
 
+    @last_cell = false
+
     @cell_empty = Gosu::Image.new(@game, 'media/cell_white_35_35.png')
     @cell_a = Gosu::Image.new(@game, 'media/cell_x_35_35.png')
     @cell_b = Gosu::Image.new(@game, 'media/cell_o_35_35.png')
+    @cell_alpha = Gosu::Image.new(@game, 'media/cell_alpha_35_35.png')
+    @cell_win = Gosu::Image.new(@game, 'media/cell_win_35_35.png')
 
   end
 
@@ -61,6 +65,7 @@ class Board
     @grid[row][col].set(v)
 
     puts "marking cell row=#{row} col=#{col} v=#{v}"
+    @last_cell = [row, col]
 
     if is_winning_move(row, col)
       @game.state = :end
@@ -70,10 +75,7 @@ class Board
     true
   end
 
-
-
   CELL_SIZE=36.55
-
 
   # return true if the cell has changed
   def cell_clicked(mx, my, v)
@@ -83,6 +85,15 @@ class Board
   end
 
   def draw(mx, my, cursor)
+
+    if @last_cell != false
+      @cell_alpha.draw(@last_cell[0] * CELL_SIZE, @last_cell[1] * CELL_SIZE, ZOrder::LastCell)
+    end
+
+    #if @game.stat = :end
+    # TODO: highlight winning sequence
+    #end
+
     (0..(@size - 1)).each do |i|
       (0..(@size - 1)).each do |j|
         x = i*CELL_SIZE
@@ -91,11 +102,11 @@ class Board
         #puts "drawing i=#{i} j=#{j} c=#{@grid[i][j].value}"
 
         if @grid[i][j].e?
-          @cell_empty.draw(x, y, 1)
+          @cell_empty.draw(x, y, ZOrder::PlayerCell)
         elsif @grid[i][j].a?
-          @cell_a.draw(x, y, 1)
+          @cell_a.draw(x, y, ZOrder::PlayerCell)
         elsif @grid[i][j].b?
-          @cell_b.draw(x, y, 1)
+          @cell_b.draw(x, y, ZOrder::PlayerCell)
         else
           puts "a ou"
         end
@@ -106,13 +117,15 @@ class Board
       end
     end
 
-    mx2 = ((mx - (CELL_SIZE/2)) / CELL_SIZE).round
-    my2 = ((my - (CELL_SIZE/2)) / CELL_SIZE).round
-    if @grid[mx2][my2].e?
-      if cursor == 1
-        @cell_a.draw(mx2 * CELL_SIZE, my2 * CELL_SIZE, 1)
-      elsif cursor == 2
-        @cell_b.draw(mx2 * CELL_SIZE, my2 * CELL_SIZE, 1)
+    if @game.state != :end
+      mx2 = ((mx - (CELL_SIZE/2)) / CELL_SIZE).round
+      my2 = ((my - (CELL_SIZE/2)) / CELL_SIZE).round
+      if @grid[mx2][my2].e?
+        if cursor == 1
+          @cell_a.draw(mx2 * CELL_SIZE, my2 * CELL_SIZE, ZOrder::PlayerCell)
+        elsif cursor == 2
+          @cell_b.draw(mx2 * CELL_SIZE, my2 * CELL_SIZE, ZOrder::PlayerCell)
+        end
       end
     end
   end

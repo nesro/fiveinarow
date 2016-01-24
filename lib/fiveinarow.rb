@@ -3,6 +3,7 @@ require 'fiveinarow/board'
 require 'fiveinarow/cell'
 require 'fiveinarow/hotseat_player'
 require 'fiveinarow/ai_player'
+require 'fiveinarow/z_order'
 require 'rubygems'
 require 'gosu'
 
@@ -24,20 +25,17 @@ module Fiveinarow
 
       @font = Gosu::Font.new(60)
       @background = Gosu::Image.new(self, 'media/background_800_800.png')
-
+      @the_end = Gosu::Image.new(self, 'media/the_end_800_800.png')
       @last_milliseconds = 0
     end
 
     def draw
-      @background.draw(0, 0, 0)
-
-
-
+      @background.draw(0, 0, ZOrder::Background)
       @board.draw(mouse_x, mouse_y, @player_on_turn.sym)
-
       if @state == :end
-        @font.draw("this is the end", 400, 200, 1, 0xff_0000ff)
+        @the_end.draw(0, 0, ZOrder::TheEnd)
       end
+
     end
 
     def needs_cursor?
@@ -53,10 +51,16 @@ module Fiveinarow
       if @state == :end && key == Gosu::MsLeft
         @board = Board.new(self, 22)
         @state = :game
+        return
       end
 
       if @player_on_turn.class == HotseatPlayer && key == Gosu::MsLeft
         if @board.cell_clicked(mouse_x, mouse_y, @player_on_turn.sym)
+
+          if @state == :end
+            return
+          end
+
           switch_players
 
           if @player_on_turn.class == AIPlayer

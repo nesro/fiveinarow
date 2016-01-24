@@ -1,8 +1,6 @@
 # Fiveinarow
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/fiveinarow`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Classis Five-in-a-row game written in Ruby + Gosu. It comes with simple AI!
 
 ## Installation
 
@@ -22,7 +20,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Left click on a cell to mark it with your symbol. AI will then play its turn.
 
 ## Development
 
@@ -38,8 +36,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
-## Some links
-
-https://confluence.jetbrains.com/display/RUBYDEV/Gem+Development+with+RubyMine
-https://leanpub.com/developing-games-with-ruby/read
