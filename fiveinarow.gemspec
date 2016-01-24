@@ -30,4 +30,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.11"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "gosu", "~> 0.10.5"
+  spec.add_development_dependency "rspec-core", "~> 3.4"
 end
