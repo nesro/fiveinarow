@@ -4,8 +4,11 @@ require 'rubygems'
 require 'gosu'
 
 class Board
-  def initialize(window, size)
-    @window = window
+  attr_accessor :size
+  attr_accessor :grid
+
+  def initialize(game, size)
+    @game = game
     @size = size
     @grid = Array.new(size) { Array.new(size) }
 
@@ -15,23 +18,71 @@ class Board
       end
     end
 
-    @cell_empty = Gosu::Image.new(@window, 'media/cell_white_35_35.png')
-    @cell_a = Gosu::Image.new(@window, 'media/cell_x_35_35.png')
-    @cell_b = Gosu::Image.new(@window, 'media/cell_o_35_35.png')
+    @cell_empty = Gosu::Image.new(@game, 'media/cell_white_35_35.png')
+    @cell_a = Gosu::Image.new(@game, 'media/cell_x_35_35.png')
+    @cell_b = Gosu::Image.new(@game, 'media/cell_o_35_35.png')
 
   end
+
+  def on(row, col)
+    return 0 if row < 0
+    return 0 if row >= @size
+    return 0 if col < 0
+    return 0 if col >= @size
+    @grid[row][col].value
+  end
+
+  def is_winning_move(row, col)
+    v = @grid[row][col].value
+
+    [[1,1], [1,0], [-1,1], [0,1]].each do |i|
+      s = 0
+      rd = i[0]
+      cd = i[1]
+      (1..4).each do |j|
+        break if v != @grid[row + rd*j][col + cd*j].value
+        s += 1
+      end
+      rd = -rd
+      cd = - cd
+      (1..4).each do |j|
+        break if v != @grid[row + rd*j][col + cd*j].value
+        s += 1
+      end
+
+      return true if s >= 4
+    end
+
+    return false
+  end
+
+  def mark_cell(row, col, v)
+    return false if !@grid[row][col].e?
+    @grid[row][col].set(v)
+
+    puts "marking cell row=#{row} col=#{col} v=#{v}"
+
+    if is_winning_move(row, col)
+      @game.state = :end
+      puts "winning!!"
+    end
+
+    true
+  end
+
+
 
   CELL_SIZE=36.55
 
 
-  def cell_clicked(mx, my)
+  # return true if the cell has changed
+  def cell_clicked(mx, my, v)
     mx2 = ((mx - (CELL_SIZE/2)) / CELL_SIZE).round
     my2 = ((my - (CELL_SIZE/2)) / CELL_SIZE).round
-    puts "row=#{@grid[my2][mx2].row} col=#{@grid[my2][mx2].col} val=#{@grid[my2][mx2].value}"
-    @grid[mx2][my2]
+    mark_cell(mx2, my2, v)
   end
 
-  def draw(mx, my)
+  def draw(mx, my, cursor)
     (0..(@size - 1)).each do |i|
       (0..(@size - 1)).each do |j|
         x = i*CELL_SIZE
@@ -57,8 +108,12 @@ class Board
 
     mx2 = ((mx - (CELL_SIZE/2)) / CELL_SIZE).round
     my2 = ((my - (CELL_SIZE/2)) / CELL_SIZE).round
-    #puts "mx=#{mx} mx2=#{mx2}"
-    @cell_b.draw(mx2 * CELL_SIZE, my2 * CELL_SIZE, 1)
-
+    if @grid[mx2][my2].e?
+      if cursor == 1
+        @cell_a.draw(mx2 * CELL_SIZE, my2 * CELL_SIZE, 1)
+      elsif cursor == 2
+        @cell_b.draw(mx2 * CELL_SIZE, my2 * CELL_SIZE, 1)
+      end
+    end
   end
 end

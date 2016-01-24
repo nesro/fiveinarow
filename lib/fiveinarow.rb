@@ -1,14 +1,15 @@
 require 'fiveinarow/version'
 require 'fiveinarow/board'
 require 'fiveinarow/cell'
+require 'fiveinarow/hotseat_player'
+require 'fiveinarow/ai_player'
 require 'rubygems'
 require 'gosu'
 
 module Fiveinarow
-
   class Game < Gosu::Window
 
-
+    attr_accessor :state
 
     def initialize
       super(800, 800, false)
@@ -16,8 +17,12 @@ module Fiveinarow
 
       @board = Board.new(self, 22)
 
+      @player_a = HotseatPlayer.new(Cell::PLAYER_A)
+      @player_b = AIPlayer.new(Cell::PLAYER_B)
 
+      @player_on_turn = @player_a
 
+      @font = Gosu::Font.new(60)
       @background = Gosu::Image.new(self, 'media/background_800_800.png')
 
       @last_milliseconds = 0
@@ -25,8 +30,14 @@ module Fiveinarow
 
     def draw
       @background.draw(0, 0, 0)
-      # @cursor.draw self.mouse_x, self.mouse_y, 0
-      @board.draw(mouse_x, mouse_y)
+
+
+
+      @board.draw(mouse_x, mouse_y, @player_on_turn.sym)
+
+      if @state == :end
+        @font.draw("this is the end", 400, 200, 1, 0xff_0000ff)
+      end
     end
 
     def needs_cursor?
@@ -38,15 +49,31 @@ module Fiveinarow
     def button_up(key)
       self.close if key == Gosu::KbEscape
 
-      puts 'hello' if key == Gosu::MsLeft
-
-      if key == Gosu::MsLeft
-        @board.cell_clicked(mouse_x, mouse_y).set(Cell::PLAYER_A)
+      # reset the game
+      if @state == :end && key == Gosu::MsLeft
+        @board = Board.new(self, 22)
+        @state = :game
       end
 
+      if @player_on_turn.class == HotseatPlayer && key == Gosu::MsLeft
+        if @board.cell_clicked(mouse_x, mouse_y, @player_on_turn.sym)
+          switch_players
 
+          if @player_on_turn.class == AIPlayer
+            @player_on_turn.make_move(@board)
+            switch_players
+          end
+        end
+      end
     end
 
+    def switch_players
+      if @player_on_turn == @player_a
+        @player_on_turn = @player_b
+      else
+        @player_on_turn = @player_a
+      end
+    end
 
     def update
       self.update_delta
@@ -61,8 +88,6 @@ module Fiveinarow
       # clamping here is important to avoid strange behaviors
       @delta = [current_time - @last_milliseconds, 0.25].min
       @last_milliseconds = current_time
-
-
     end
   end
 
