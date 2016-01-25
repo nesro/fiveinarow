@@ -3,7 +3,7 @@
 $LOAD_PATH << './'
 require 'rspec'
 require_relative 'spec_helper'
-require '../../lib/fiveinarow/cell'
+require 'fiveinarow/cell'
 
 describe Cell do
 
@@ -16,7 +16,7 @@ describe Cell do
 
   end
 
-  it 'should store its value' do
-    true.should == false
-  end
+  #it 'should store its value' do
+  #  true.should == false
+  #end
 end

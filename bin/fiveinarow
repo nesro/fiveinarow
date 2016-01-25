@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+
+root_dir = File.expand_path(File.join(
+    File.dirname(File.dirname(__FILE__)), '.'))
+
+%w(
+  lib/fiveinarow/ai_player.rb
+  lib/fiveinarow/board.rb
+  lib/fiveinarow/cell.rb
+  lib/fiveinarow/generic_player.rb
+  lib/fiveinarow/hotseat_player.rb
+  lib/fiveinarow/version.rb
+  lib/fiveinarow/z_order.rb
+  lib/fiveinarow.rb
+).each do |f|
+  #puts "requiring #{File.join(root_dir, f)}"
+  require File.join(root_dir, f)
+end
+
+Fiveinarow::Game.new(root_dir).show

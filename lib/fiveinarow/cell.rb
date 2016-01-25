@@ -14,7 +14,6 @@ class Cell
   end
 
   def set(v)
-    puts "changed to #{v}"
     @value = v
   end
 

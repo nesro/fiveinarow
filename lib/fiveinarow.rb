@@ -7,16 +7,18 @@ require 'fiveinarow/z_order'
 require 'rubygems'
 require 'gosu'
 
+# Main module
 module Fiveinarow
   class Game < Gosu::Window
 
+    # Whether is game or the end of a game
     attr_accessor :state
 
-    def initialize
+    def initialize(root_dir)
       super(800, 800, false)
       self.caption = 'Five In A Row'
-
-      @board = Board.new(self, 22)
+      @root_dir = root_dir
+      @board = Board.new(self, 22, root_dir)
 
       @player_a = HotseatPlayer.new(Cell::PLAYER_A)
       @player_b = AIPlayer.new(Cell::PLAYER_B)
@@ -24,8 +26,11 @@ module Fiveinarow
       @player_on_turn = @player_a
 
       @font = Gosu::Font.new(60)
-      @background = Gosu::Image.new(self, 'media/background_800_800.png')
-      @the_end = Gosu::Image.new(self, 'media/the_end_800_800.png')
+
+
+
+      @background = Gosu::Image.new(self, File.join(root_dir, "lib/media/background_800_800.png"))
+      @the_end = Gosu::Image.new(self, File.join(root_dir, "lib/media/the_end_800_800.png"))
       @last_milliseconds = 0
     end
 
@@ -49,7 +54,7 @@ module Fiveinarow
 
       # reset the game
       if @state == :end && key == Gosu::MsLeft
-        @board = Board.new(self, 22)
+        @board = Board.new(self, 22, @root_dir)
         @state = :game
         return
       end
@@ -94,8 +99,4 @@ module Fiveinarow
       @last_milliseconds = current_time
     end
   end
-
-  game = Game.new
-  game.show
-
 end

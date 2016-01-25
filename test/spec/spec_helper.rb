@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-
+require 'rspec'
 RSpec.configure do |c|
   c.color = true
   c.formatter = :documentation

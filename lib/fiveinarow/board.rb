@@ -1,4 +1,5 @@
 require_relative 'cell'
+require_relative '../fiveinarow'
 
 require 'rubygems'
 require 'gosu'
@@ -7,7 +8,7 @@ class Board
   attr_accessor :size
   attr_accessor :grid
 
-  def initialize(game, size)
+  def initialize(game, size, root_dir)
     @game = game
     @size = size
     @grid = Array.new(size) { Array.new(size) }
@@ -20,11 +21,11 @@ class Board
 
     @last_cell = false
 
-    @cell_empty = Gosu::Image.new(@game, 'media/cell_white_35_35.png')
-    @cell_a = Gosu::Image.new(@game, 'media/cell_x_35_35.png')
-    @cell_b = Gosu::Image.new(@game, 'media/cell_o_35_35.png')
-    @cell_alpha = Gosu::Image.new(@game, 'media/cell_alpha_35_35.png')
-    @cell_win = Gosu::Image.new(@game, 'media/cell_win_35_35.png')
+    @cell_empty = Gosu::Image.new(@game, File.join(root_dir, "lib/media/cell_white_35_35.png"))
+    @cell_a = Gosu::Image.new(@game, File.join(root_dir, "lib/media/cell_x_35_35.png"))
+    @cell_b = Gosu::Image.new(@game, File.join(root_dir, "lib/media/cell_o_35_35.png"))
+    @cell_alpha = Gosu::Image.new(@game, File.join(root_dir, "lib/media/cell_alpha_35_35.png"))
+    @cell_win = Gosu::Image.new(@game, File.join(root_dir, "lib/media/cell_win_35_35.png"))
 
   end
 
