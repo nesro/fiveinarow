@@ -65,7 +65,7 @@ class Board
     return false if !@grid[row][col].e?
     @grid[row][col].set(v)
 
-    puts "marking cell row=#{row} col=#{col} v=#{v}"
+    # puts "marking cell row=#{row} col=#{col} v=#{v}"
     @last_cell = [row, col]
 
     if is_winning_move(row, col)

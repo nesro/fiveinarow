@@ -14,7 +14,9 @@ class Cell
   end
 
   def set(v)
+    return false if @value == v
     @value = v
+    true
   end
 
   def e?

@@ -9,8 +9,8 @@ require 'gosu'
 
 # Main module
 module Fiveinarow
+  # Main object
   class Game < Gosu::Window
-
     # Whether is game or the end of a game
     attr_accessor :state
 
@@ -22,27 +22,27 @@ module Fiveinarow
 
       @player_a = HotseatPlayer.new(Cell::PLAYER_A)
       @player_b = AIPlayer.new(Cell::PLAYER_B)
+      @player_b.ai_dumb = 100
 
       @player_on_turn = @player_a
 
       @font = Gosu::Font.new(60)
 
-
-
-      @background = Gosu::Image.new(self, File.join(root_dir, "lib/media/background_800_800.png"))
-      @the_end = Gosu::Image.new(self, File.join(root_dir, "lib/media/the_end_800_800.png"))
+      @background = Gosu::Image.new(self, File.join(root_dir, 'lib/media/background_800_800.png'))
+      @the_end = Gosu::Image.new(self, File.join(root_dir, 'lib/media/the_end_800_800.png'))
       @last_milliseconds = 0
     end
 
+    # draw the board
     def draw
       @background.draw(0, 0, ZOrder::Background)
       @board.draw(mouse_x, mouse_y, @player_on_turn.sym)
       if @state == :end
         @the_end.draw(0, 0, ZOrder::TheEnd)
       end
-
     end
 
+    # yes we need the cursor to be visible
     def needs_cursor?
       true
     end
@@ -50,7 +50,7 @@ module Fiveinarow
     # this is a callback for key up events or equivalent (there are
     # constants for gamepad buttons and mouse clicks)
     def button_up(key)
-      self.close if key == Gosu::KbEscape
+      close if key == Gosu::KbEscape
 
       # reset the game
       if @state == :end && key == Gosu::MsLeft
@@ -59,12 +59,13 @@ module Fiveinarow
         return
       end
 
+      @player_b.ai_inc if key == Gosu::KbS
+      @player_b.ai_dec if key == Gosu::KbD
+
       if @player_on_turn.class == HotseatPlayer && key == Gosu::MsLeft
         if @board.cell_clicked(mouse_x, mouse_y, @player_on_turn.sym)
 
-          if @state == :end
-            return
-          end
+          return if @state == :end
 
           switch_players
 
@@ -85,7 +86,7 @@ module Fiveinarow
     end
 
     def update
-      self.update_delta
+      update_delta
       # with a delta we need to express the speed of our entities in
       # terms of pixels/second
     end

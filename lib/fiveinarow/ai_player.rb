@@ -1,6 +1,25 @@
 require_relative 'generic_player'
 
+# player its inteligence is aritificial
 class AIPlayer < GenericPlayer
+
+  attr_accessor :ai_dumb
+
+  def ai_dec
+   @ai_dumb -= 10
+   @ai_dumb = [0, @ai_dumb].max
+   ai_how_much
+  end
+
+  def ai_inc
+    @ai_dumb += 10
+    @ai_dumb = [100, @ai_dumb].min
+    ai_how_much
+  end
+
+  def ai_how_much
+    puts "ai is now #{ai_dumb} % smart"
+  end
 
   def make_move(board)
     ai(board)
@@ -24,11 +43,6 @@ class AIPlayer < GenericPlayer
     else
       opsym = Cell::PLAYER_A
     end
-
-    # 0 is EMPTY_CELL
-    # 1 is AI (this one)
-    # 2 is opponent
-    # -1 is end of pattern
 
     [
         # my four, go for win
@@ -67,14 +81,22 @@ class AIPlayer < GenericPlayer
         [0, [0, 2, 0]]
 
     ].each do |pattern|
-      puts "pattern = #{pattern}"
+      # puts "pattern = #{pattern}"
       (0..board.size - 1).each do |row|
         (0..board.size - 1).each do |col|
-          [[1, 1], [1, 0], [-1, 1], [0, 1], [-1, -1], [-1, 0], [1, -1], [0, -1]].each do |k|
+          [[ 1,  1],
+           [ 1,  0],
+           [-1,  1],
+           [ 0,  1],
+           [-1, -1],
+           [-1,  0],
+           [ 1, -1],
+           [ 0, -1]].each do |k|
             rd = k[0]
             cd = k[1]
             s = 0
             pattern[1].each_with_index.map do |pval, pind|
+              break if rand(100) > @ai_dumb
               if pval == 0
                 break if board.on(row + rd*pind, col + cd*pind) != 0
               elsif pval == 1
@@ -93,7 +115,10 @@ class AIPlayer < GenericPlayer
       end
     end
 
-    puts "oh shit"
-    return false
+    loop do
+      break if board.mark_cell(rand(board.size), rand(size), self.sym)
+    end
+
+    false
   end
 end
